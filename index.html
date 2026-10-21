@@ -339,4 +339,124 @@ function fixBannersOneNumber(){
    img.onerror = function(){ this.src = newPosters[Math.floor(Math.random()*newPosters.length)]; }
  });
 
- //
+ //<!-- PENCIL EDIT PATCH - TEMPORARY -->
+<style>
+.edit-btn{
+ position:absolute;top:8px;right:8px;width:32px;height:32px;
+ background:rgba(0,0,0,0.7);border:1px solid #fff;border-radius:50%;
+ display:flex;align-items:center;justify-content:center;
+ font-size:16px;cursor:pointer;z-index:20;backdrop-filter:blur(10px)
+}
+.big,.item{position:relative}
+#galleryInput{display:none}
+.quality-tag{
+ position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,0.8);
+ color:#2ecc71;font-size:8px;padding:2px 6px;border-radius:4px;font-weight:700
+}
+</style>
+<input type="file" id="galleryInput" accept="image/*">
+<script>
+let currentEditTarget = null;
+let currentEditTitle = null;
+
+function addPencilButtons(){
+ // Banner pe pencil
+ document.querySelectorAll('.big').forEach((el, i)=>{
+   if(el.querySelector('.edit-btn')) return;
+   let title = el.querySelector('b') ? el.querySelector('b').innerText : 'Banner-'+i;
+   let btn = document.createElement('div');
+   btn.className='edit-btn';
+   btn.innerHTML='✏️';
+   btn.title='Gallery se Banner Change Karo';
+   btn.onclick=(e)=>{e.stopPropagation(); openGallery(el.querySelector('img'), title, 'banner')};
+   el.appendChild(btn);
+   // Quality tag
+   let tag=document.createElement('div');tag.className='quality-tag';tag.innerText='FULL HD';el.appendChild(tag);
+ });
+
+ // Thumbnail pe pencil
+ document.querySelectorAll('.item').forEach((el, i)=>{
+   if(el.querySelector('.edit-btn')) return;
+   let title = el.querySelector('p') ? el.querySelector('p').innerText : 'Thumb-'+i;
+   let btn = document.createElement('div');
+   btn.className='edit-btn';
+   btn.innerHTML='✏️';
+   btn.style.width='26px';btn.style.height='26px';btn.style.fontSize='12px';
+   btn.title='Gallery se Thumbnail Change Karo';
+   btn.onclick=(e)=>{e.stopPropagation(); openGallery(el.querySelector('img'), title, 'thumb')};
+   el.appendChild(btn);
+   let tag=document.createElement('div');tag.className='quality-tag';tag.innerText='HQ';el.appendChild(tag);
+ });
+}
+
+function openGallery(imgElement, title, type){
+ currentEditTarget = imgElement;
+ currentEditTitle = title;
+ document.getElementById('galleryInput').click();
+}
+
+document.getElementById('galleryInput').addEventListener('change', function(e){
+ let file = e.target.files[0];
+ if(!file) return;
+ let reader = new FileReader();
+ reader.onload = function(ev){
+   let dataUrl = ev.target.result;
+   if(currentEditTarget){
+     currentEditTarget.src = dataUrl;
+     currentEditTarget.style.objectFit='cover';
+     // LocalStorage me save karo taki refresh pe na jaye
+     let key = 'flickbox_custom_'+currentEditTitle+'_'+(currentEditTarget.className||'img');
+     localStorage.setItem(key, dataUrl);
+     alert('✅ '+currentEditTitle+' - Full HQ Quality me lag gaya! Ab save ho gaya hai.');
+   }
+   // Banner aur Thumbnail dono pe same image laga do
+   if(currentEditTitle){
+     document.querySelectorAll('.item, .big').forEach(el=>{
+       let t = el.innerText.includes(currentEditTitle.split('[')[0].trim());
+       if(t){
+         let img = el.querySelector('img');
+         if(img) img.src = dataUrl;
+       }
+     });
+   }
+ };
+ reader.readAsDataURL(file);
+ // Reset input
+ e.target.value='';
+});
+
+// Pehle se saved images load karo
+function loadSaved(){
+ document.querySelectorAll('.item, .big').forEach(el=>{
+   let titleEl = el.querySelector('b') || el.querySelector('p');
+   if(!titleEl) return;
+   let title = titleEl.innerText;
+   let key = 'flickbox_custom_'+title+'_img';
+   let saved = localStorage.getItem(key) || localStorage.getItem('flickbox_custom_'+title+'_banner') || localStorage.getItem('flickbox_custom_'+title+'_thumb');
+   if(saved){
+     let img = el.querySelector('img');
+     if(img) img.src = saved;
+   }
+ });
+}
+
+setInterval(addPencilButtons, 1000);
+setTimeout(()=>{addPencilButtons();loadSaved();}, 500);
+
+// LOCK FUNCTION - Jab sab thumbnails theek ho jayen to pencil hatao
+function lockEditing(){
+ document.querySelectorAll('.edit-btn').forEach(b=>b.style.display='none');
+ localStorage.setItem('flickbox_locked','true');
+ alert('🔒 Pencil Button Lock ho gaya, ab edit nahi hoga');
+}
+function unlockEditing(){
+ document.querySelectorAll('.edit-btn').forEach(b=>b.style.display='flex');
+ localStorage.removeItem('flickbox_locked');
+ alert('🔓 Pencil Unlock ho gaya');
+}
+
+// Agar locked hai to pencil na dikhao
+if(localStorage.getItem('flickbox_locked')){
+ setTimeout(()=>{document.querySelectorAll('.edit-btn').forEach(b=>b.style.display='none')},2000);
+}
+</script>
