@@ -102,3 +102,121 @@ renderAnime();renderSongs();
 - Naruto Shippuden (Enemy 1) -> Episode 1, 2, 3...
 - One Piece (Enemy 2) -> Episode 1, 2, 3...
 - Bleach TYBW (Enemy 3) -> Episode 1, 2, 3...
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEFLIK - Created by Zero</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#000;color:#fff}
+.top-bar{text-align:center;padding:8px;background:#111;font-size:11px;color:#888;letter-spacing:1px}
+.header{position:sticky;top:0;z-index:99;background:#000;padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #222}
+.back-btn{background:#222;border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:18px}
+.logo{color:#ff3c3c;font-weight:900;font-size:20px;flex:1}
+.logo span{font-size:10px;color:#888;display:block;font-weight:400}
+.search{flex:2;background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:8px 14px;color:#fff;outline:none}
+#playerWrap{background:#0a0a0a;padding:10px}
+video, audio{width:100%;border-radius:8px;background:#000}
+.controls{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.qbtn{background:#1a1a1a;border:1px solid #333;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;cursor:pointer}
+.qbtn.active{background:#ff0040;border-color:#ff0040}
+.playBtn{background:#ff0040;border:none;color:#fff;padding:8px 18px;border-radius:20px;font-weight:700;cursor:pointer}
+.closeBtn{background:#222;border:1px solid #444;color:#fff;padding:8px 14px;border-radius:20px;cursor:pointer}
+.nowPlaying{text-align:center;color:#ffaa00;font-size:12px;margin-top:6px}
+.rec-card{margin:12px;background:linear-gradient(135deg,#1a0a2e,#2d1b4e);border:1px solid #f0c040;border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center;position:relative}
+.rec-tag{position:absolute;top:-8px;left:12px;background:#f0c040;color:#000;font-size:9px;padding:2px 8px;border-radius:4px;font-weight:800}
+.sectionTitle{padding:14px 12px 6px;font-size:16px;font-weight:800;border-left:3px solid #ff0040;margin-left:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px}
+.card{background:#111;border-radius:10px;overflow:hidden;border:1px solid #222;cursor:pointer}
+.card img{width:100%;height:170px;object-fit:cover}
+.cardInfo{padding:8px}
+.cardInfo b{font-size:13px;display:block}
+.cardInfo span{font-size:10px;color:#888}
+.episodes{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:999;overflow-y:auto;padding:60px 12px 20px}
+.episodes.active{display:block}
+.epList{display:grid;gap:8px;margin-top:12px}
+.epItem{background:#111;border:1px solid #222;padding:10px 14px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.epItem:hover{background:#1a1a1a;border-color:#ff0040}
+.audioFix{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;padding:10px;display:none;z-index:1000}
+.audioFix.active{display:flex;gap:10px;align-items:center}
+</style>
+</head>
+<body>
+<div class="top-bar">Created by Zero | flikhere-ux.github.io/animeflik | 2026</div>
+<div class="header">
+<button class="back-btn" onclick="goBack()">←</button>
+<div class="logo">ANIMEFLIK 🔥<span>Watch Anime & Songs</span></div>
+<input class="search" id="search" placeholder="Search anime, songs..." oninput="doSearch(this.value)">
+</div>
+
+<div id="playerWrap">
+<video id="mainVideo" controls poster="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600"></video>
+<audio id="mainAudio" controls style="display:none"></audio>
+<div class="controls">
+<button class="qbtn active" onclick="setQ('1080p')">HQ 1080p</button>
+<button class="qbtn" onclick="setQ('720p')">HD 720p</button>
+<button class="qbtn" onclick="setQ('480p')">LQ 480p</button>
+<button class="playBtn" onclick="playCurrent()">▶ Play Now</button>
+<button class="closeBtn" onclick="closePlayer()">✕ Close</button>
+</div>
+<div class="nowPlaying" id="nowPlaying">Now Playing: Select Anime</div>
+</div>
+
+<div class="rec-card">
+<div class="rec-tag">RECOMMENDED</div>
+<div style="flex:1">
+<div style="font-weight:800">BLUE BOX - Recommended</div>
+<div style="font-size:11px;color:#aaa;margin:4px 0">Sports | Romance | Latest Episode</div>
+<button class="playBtn" style="background:#f0c040;color:#000;padding:6px 14px;font-size:12px" onclick="openAnime('bluebox')">Play Now</button>
+</div>
+</div>
+
+<div class="sectionTitle">BIG THREE LIVE</div>
+<div class="grid" id="bigThree"></div>
+
+<div class="sectionTitle">TRENDING NOW</div>
+<div class="grid" id="trending"></div>
+
+<div class="sectionTitle">MAGIC WORLD</div>
+<div class="grid" id="magic"></div>
+
+<div class="sectionTitle">Songs - Thumbnail = Title [MP3 Background Play]</div>
+<div class="grid" id="songs"></div>
+
+<div class="episodes" id="epPage">
+<div class="header" style="position:fixed;top:24px;left:0;right:0"><button class="back-btn" onclick="closeEp()">←</button><div id="epTitle" style="font-weight:800"></div></div>
+<div class="epList" id="epList"></div>
+</div>
+
+<div class="audioFix" id="miniPlayer">
+<img id="miniThumb" src="" style="width:40px;height:40px;border-radius:6px">
+<div style="flex:1"><b id="miniTitle" style="font-size:12px"></b><div style="font-size:10px;color:#888">Playing in background</div></div>
+<button class="playBtn" onclick="toggleAudio()">⏯</button>
+</div>
+
+<script>
+// DATA - All Episodes
+const animes = {
+naruto:{title:"Naruto Shippuden",cat:"bigThree",img:"https://cdn.myanimelist.net/images/anime/5/17407.jpg",eps:720},
+onepiece:{title:"One Piece",cat:"bigThree",img:"https://cdn.myanimelist.net/images/anime/6/73245.jpg",eps:1120},
+bleach:{title:"Bleach TYBW",cat:"bigThree",img:"https://cdn.myanimelist.net/images/anime/3/81465.jpg",eps:28},
+jujutsu:{title:"Jujutsu Kaisen",cat:"trending",img:"https://cdn.myanimelist.net/images/anime/1131/136527.jpg",eps:47},
+demon:{title:"Demon Slayer",cat:"trending",img:"https://cdn.myanimelist.net/images/anime/1286/99889.jpg",eps:55},
+solo:{title:"Solo Leveling",cat:"trending",img:"https://cdn.myanimelist.net/images/anime/1925/145597.jpg",eps:12},
+nomagic:{title:"No Magic",cat:"magic",img:"https://cdn.myanimelist.net/images/anime/1208/94745.jpg",eps:24},
+bluebox:{title:"BLUE BOX",cat:"trending",img:"https://cdn.myanimelist.net/images/anime/1773/145597.jpg",eps:12}
+};
+const songs = [
+{id:"sajni",title:"Arijit Singh - Sajni",thumb:"https://i.ytimg.com/vi/2Vv-BfVoq4g/hqdefault.jpg",mp3:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"},
+{id:"apna",title:"Arijit Singh - Apna Bana Le",thumb:"https://i.ytimg.com/vi/k4yXQkI8ccg/hqdefault.jpg",mp3:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"},
+{id:"pehle",title:"Pehle Bhi Main",thumb:"https://i.ytimg.com/vi/3x1YszC8sXw/hqdefault.jpg",mp3:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"}
+];
+let currentType="", currentId="", currentEp=1, currentQ="1080p";
+const v=document.getElementById('mainVideo'), a=document.getElementById('mainAudio');
+
+function render(){
+let b=document.getElementById('bigThree'), t=document.getElementById('trending'), m=document.getElementById('magic'), s=document.getElementById('songs');
+b.innerHTML=""; t.innerHTML=""; m.innerHTML=""; s.innerHTML="";
+for(let k
