@@ -327,25 +327,4 @@ document.getElementById('v').play();
 closeEp();
 }
 function closeEp(){document.getElementById('epPage').classList.remove('on')}
-function goBack(){if(document.getElementById('epPage').classList.contains('on')) closeEp(); else history.back()}
-function search(q){
-q=q.toLowerCase();
-document.querySelectorAll('.card').forEach(c=>{
-c.style.display=c.innerText.toLowerCase().includes(q)?'block':'none';
-});
-}
-function startVoice(){
-let R=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(!R){alert('Voice Chrome me chalega');return}
-let r=new R(); r.lang='en-US'; r.start();
-r.onresult=e=>{
-let txt=e.results[0][0].transcript;
-document.getElementById('sBox').value=txt;
-search(txt);
-};
-}
-render();
-document.addEventListener('contextmenu',e=>e.preventDefault());
-</script>
-</body>
-</html>
+function goBack(){if(document.getElementById('epPage').classList.contains('on')) close
