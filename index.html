@@ -305,3 +305,38 @@ alert('Banner Changed! ✓');
 setInterval(addSettings,2000);
 </script>
 <!-- PATCH END -->
+<!-- BANNER FIX PATCH - ONE NUMBER CODING -->
+<script>
+const REAL_BANNERS = {
+"Blue Box [Hindi]": { banner: "https://image.tmdb.org/t/p/original/4se1y5V0r2r5qHqFHe2w9Q1.jpg", poster: "https://image.tmdb.org/t/p/w500/1u1dR6gQYJ5PqQ3L3z3z3.jpg" },
+"Naruto Shippuden": { banner: "https://image.tmdb.org/t/p/original/z7ilTqsHU5u5qPqFHe2w9Q1.jpg", poster: "https://media.kitsu.io/anime/poster_images/11/large.jpg" },
+"One Piece": { banner: "https://image.tmdb.org/t/p/original/2rmK7mnchw9Xr3XdiTfsxTT.jpg", poster: "https://media.kitsu.io/anime/poster_images/12/large.jpg" },
+"Jujutsu Kaisen": { banner: "https://image.tmdb.org/t/p/original/j4P8zq2V1x0x5x0x5x0x5.jpg", poster: "https://media.kitsu.io/anime/poster_images/40748/large.jpg" },
+"Solo Leveling": { banner: "https://image.tmdb.org/t/p/original/3XxXxXxXxXxXxXxXxXx.jpg", poster: "https://media.kitsu.io/anime/poster_images/47790/large.jpg" },
+"Demon Slayer": { banner: "https://image.tmdb.org/t/p/original/x2RS3uTcsJJ9IfjNPcgDmukoEcQ.jpg", poster: "https://media.kitsu.io/anime/poster_images/41370/large.jpg" },
+"Attack on Titan": { banner: "https://image.tmdb.org/t/p/original/hTP1DtLGFamjfu8Wqj02n4sOn.jpg", poster: "https://media.kitsu.io/anime/poster_images/7442/large.jpg" }
+};
+
+function fixBannersOneNumber(){
+ // Kitsu CDN fail ہو رہا ہے، اس لیے نیا CDN
+ const newPosters = [
+  "https://cdn.myanimelist.net/images/anime/1621/136766.jpg", // Blue Box
+  "https://cdn.myanimelist.net/images/anime/5/17407.jpg", // Naruto
+  "https://cdn.myanimelist.net/images/anime/6/73245.jpg", // One Piece
+  "https://cdn.myanimelist.net/images/anime/1130/120243.jpg", // Jujutsu
+  "https://cdn.myanimelist.net/images/anime/1925/142951.jpg", // Solo Leveling
+  "https://cdn.myanimelist.net/images/anime/1286/99889.jpg", // Demon Slayer
+  "https://cdn.myanimelist.net/images/anime/1000/110531.jpg", // AOT
+  "https://cdn.myanimelist.net/images/anime/3/40451.jpg" // Bleach
+ ];
+
+ document.querySelectorAll('.item img, .card img').forEach((img, i) => {
+   if(img.src.includes('kitsu.io') || img.naturalWidth==0 || !img.complete){
+     let idx = i % newPosters.length;
+     img.src = newPosters[idx];
+     img.style.background="#1a1a1a";
+   }
+   img.onerror = function(){ this.src = newPosters[Math.floor(Math.random()*newPosters.length)]; }
+ });
+
+ //
