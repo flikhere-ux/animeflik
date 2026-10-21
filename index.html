@@ -3,26 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FLICKBOX - FINAL</title>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<title>FLICKBOX - MovieBox Clone</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
 body{background:#0a0a0a;color:#fff;padding-bottom:70px}
 .login{position:fixed;inset:0;background:radial-gradient(circle at top,#1e1e4a,#050505);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 .login.hide{display:none}
-.login h1{font-size:42px;font-weight:900;color:#ff3b30}
-.login p{color:#666;font-size:12px;margin:8px 0 20px}
 .box{background:#151515;border:1px solid #222;border-radius:20px;padding:20px;width:100%;max-width:360px}
 .g{width:100%;background:#fff;color:#000;border:none;padding:13px;border-radius:12px;font-weight:700;margin-bottom:10px;cursor:pointer}
-.inp{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:13px;color:#fff;outline:none;margin-bottom:10px}
-.btn{width:100%;background:#ff3b30;color:#fff;border:none;padding:13px;border-radius:12px;font-weight:800;cursor:pointer}
+.inp{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:13px;color:#fff;outline:none;margin-bottom:6px}
+.btn{width:100%;background:#ff3b30;color:#fff;border:none;padding:13px;border-radius:12px;font-weight:800;cursor:pointer;margin-top:6px}
+.err{color:#ff3b30;font-size:11px;margin:0 0 8px 4px;display:none}
 .top{position:sticky;top:0;z-index:50;background:#0a0a0a;padding:10px 12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #111}
 .logo{width:36px;height:36px;background:linear-gradient(135deg,#00c6ff,#0072ff);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900}
 .sbox{flex:1;background:#1c1c1e;border:1px solid #222;border-radius:12px;padding:10px 14px;display:flex;gap:8px}
-.sbox input{flex:1;background:transparent;border:none;color:#fff;outline:none;font-size:13px}
-.banner{padding:14px;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory}
+.sbox input{flex:1;background:transparent;border:none;color:#fff;outline:none}
+.banner{padding:14px;display:flex;gap:12px;overflow-x:auto}
 .banner::-webkit-scrollbar{display:none}
-.big{min-width:90%;height:210px;border-radius:18px;overflow:hidden;position:relative;flex-shrink:0;background:#151515;border:1px solid #222;scroll-snap-align:center}
+.big{min-width:90%;height:210px;border-radius:18px;overflow:hidden;position:relative;flex-shrink:0;background:#151515;border:1px solid #222}
 .big img{width:100%;height:100%;object-fit:cover}
 .big .info{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.95));padding:14px}
 .sec{padding:18px 12px 8px;display:flex;justify-content:space-between}
@@ -30,9 +28,9 @@ body{background:#0a0a0a;color:#fff;padding-bottom:70px}
 .row{display:flex;gap:10px;overflow-x:auto;padding:0 12px 12px}
 .row::-webkit-scrollbar{display:none}
 .card{min-width:134px;width:134px;background:#121212;border-radius:12px;overflow:hidden;position:relative;flex-shrink:0;border:1px solid #1e1e1e;cursor:pointer}
-.card img{width:100%;height:188px;object-fit:cover;display:block;background:#1a1a1a}
+.card img{width:100%;height:188px;object-fit:cover;background:#1a1a1a}
 .badge{position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.85);font-size:8px;padding:3px 6px;border-radius:5px}
-.card p{font-size:11px;padding:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ddd}
+.card p{font-size:11px;padding:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bottom{position:fixed;bottom:0;left:0;right:0;background:#121212;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0;z-index:100}
 .bi{font-size:10px;color:#666;text-align:center;flex:1;cursor:pointer}
 .bi.active{color:#fff}
@@ -44,65 +42,84 @@ body{background:#0a0a0a;color:#fff;padding-bottom:70px}
 .vp{position:fixed;inset:0;background:#000;z-index:200;display:none;flex-direction:column}
 .vp.on{display:flex}
 .vp video{width:100%;aspect-ratio:16/9;background:#000}
+.res-bar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.res-btn{padding:6px 12px;border-radius:20px;font-size:11px;border:1px solid #333;background:#1e1e1e;color:#fff;cursor:pointer}
+.res-btn.active{background:#fff;color:#000}
+.ep-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}
+.ep-bar::-webkit-scrollbar{display:none}
+.ep{padding:6px 14px;border-radius:8px;background:#1e1e1e;border:1px solid #333;font-size:11px;cursor:pointer;white-space:nowrap}
+.ep.active{background:#2ecc71;color:#000;border-color:#2ecc71}
+.q-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.q-btn{padding:7px 12px;border-radius:20px;font-size:11px;border:1px solid #333;background:#1e1e1e;color:#fff;cursor:pointer}
+.q-btn.active{background:#fff;color:#000}
 </style>
 </head>
 <body>
 
 <div class="login" id="loginPage">
-<h1>FLICKBOX 🔥</h1>
-<p>1000+ ANIMES • NO PREMIUM • NO RECOMMEND • LOGIN FIRST</p>
+<h1 style="font-size:42px;font-weight:900;color:#ff3b30">FLICKBOX 🔥</h1>
+<p style="color:#666;font-size:11px;margin:8px 0 18px">MOVIEBOX STYLE • LOGIN REQUIRED</p>
 <div class="box">
-<button class="g" onclick="doLogin()">🌐 Continue with Google</button>
-<button class="g" style="background:#1e1e1e;color:#fff;border:1px solid #333" onclick="doLogin()">✉️ Continue with Email</button>
-<input class="inp" id="email" placeholder="Enter Email">
-<input class="inp" id="pass" type="password" placeholder="Password">
+<button class="g" onclick="checkGoogle()">🌐 Continue with Google</button>
+<input class="inp" id="email" placeholder="Enter Email (required)">
+<div class="err" id="eErr">⚠️ Email likhna zaroori hai!</div>
+<input class="inp" id="pass" type="password" placeholder="Enter Password (required)">
+<div class="err" id="pErr">⚠️ Password likhna zaroori hai!</div>
 <button class="btn" onclick="doLogin()">Login & Enter FLICKBOX</button>
-<p style="text-align:center;color:#333;font-size:10px;margin-top:12px">Demo Login - Kuch bhi likh ke login karo</p>
 </div>
 </div>
 
 <div id="mainApp">
-<div class="top"><div class="logo">F</div><div class="sbox">🔍<input id="s" placeholder="Search 1000+ Animes - FLICKBOX..." oninput="doSearch(this.value)"><span style="color:#2ecc71;font-weight:800;font-size:13px">Search</span></div></div>
+<div class="top"><div class="logo">F</div><div class="sbox">🔍<input id="s" placeholder="Search 1000+ Animes..." oninput="doSearch(this.value)"></div></div>
 <div class="banner" id="banners"></div>
-<div class="sec"><b>Trending Now 🔥</b><span style="color:#666;font-size:11px">All ></span></div><div class="row" id="r1"></div>
+<div class="sec"><b>Trending Now 🔥</b></div><div class="row" id="r1"></div>
 <div class="sec"><b>Anime in Progress ✈️</b></div><div class="row" id="r2"></div>
 <div class="sec"><b>Classic 🌟 Anime Series</b></div><div class="row" id="r3"></div>
 <div class="sec"><b>Burning with Ardour 🔥</b></div><div class="row" id="r4"></div>
-<div class="sec"><b>Dark Fantasy ❤️</b></div><div class="row" id="r5"></div>
-<div class="sec"><b>Game On! 🏆</b></div><div class="row" id="r6"></div>
-<div class="sec"><b>Sweet Love 🥰</b></div><div class="row" id="r7"></div>
 </div>
 
-<div class="page" id="mePage"><div class="p-head"><div class="back" onclick="closeMe()">←</div><b>Me - FLICKBOX</b></div><div style="padding:20px"><div style="display:flex;gap:12px;align-items:center"><div style="width:60px;height:60px;border-radius:50%;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-size:28px">👤</div><div><div style="font-weight:800" id="userName">FLICKBOX User</div><div style="color:#2ecc71;font-size:11px">Logged In • 1000+ Animes</div></div></div><div style="margin-top:20px;display:grid;gap:10px"><div style="background:#151515;padding:14px;border-radius:12px" onclick="openDL()">⬇️ My Downloads - <span id="dlCount">0</span> Videos</div><div style="background:#151515;padding:14px;border-radius:12px">🕒 Watch History</div><div style="background:#151515;padding:14px;border-radius:12px" onclick="logout()">🚪 Logout</div></div></div></div>
-<div class="page" id="downPage"><div class="p-head"><div class="back" onclick="closeDown()">←</div><b>Downloads</b></div><div id="dlList" style="padding:14px"><div style="text-align:center;color:#666;padding:50px"><div style="font-size:50px">⬇️</div><div>No downloads yet</div><div style="font-size:11px;margin-top:6px">Play any video and click Download button</div></div></div></div>
-<div class="vp" id="vp"><div style="padding:12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #222"><div class="back" onclick="closeV()">←</div><b id="vt"></b></div><video id="v" controls playsinline></video><div style="padding:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button onclick="downloadNow()" style="background:#2ecc71;color:#000;border:none;padding:9px 18px;border-radius:20px;font-weight:800">⬇️ Download</button><button onclick="document.getElementById('v').play()" style="background:#ff3b30;color:#fff;border:none;padding:9px 18px;border-radius:20px;font-weight:800">▶ Play</button><button onclick="closeV()" style="background:#1e1e1e;border:1px solid #333;color:#fff;padding:7px 16px;border-radius:20px">✕ Close</button></div></div>
+<div class="page" id="mePage"><div class="p-head"><div class="back" onclick="closeMe()">←</div><b>Me</b></div>
+<div style="padding:0"><div style="padding:16px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #1a1a1a"><div style="width:48px;height:48px;border-radius:50%;background:#1e1e1e;display:flex;align-items:center;justify-content:center">👤</div><div><div style="font-weight:800">GUL SHAR <span style="background:#1e1e1e;font-size:10px;padding:2px 6px;border-radius:4px">Study Mode</span></div><div style="font-size:11px;color:#666">ID: 860897175 • <span id="userName">User</span></div></div></div>
+<div style="margin:12px;background:#151515;border-radius:12px;padding:12px;display:flex;justify-content:space-between"><div><div style="font-size:12px">💎 Premium Basic - 2 days left</div><div style="font-size:10px;color:#666">until 10/23/2026</div></div><div style="background:#ffcc00;color:#000;padding:4px 10px;border-radius:20px;font-size:11px">Renew</div></div>
+<div style="padding:12px;display:grid;gap:10px"><div style="background:#151515;padding:12px;border-radius:10px" onclick="openDL()">⬇️ My Downloads - <span id="dlCount">0</span></div><div style="background:#151515;padding:12px;border-radius:10px" onclick="logout()">🚪 Logout</div></div></div></div>
+
+<div class="page" id="downPage"><div class="p-head"><div class="back" onclick="closeDown()">←</div><b>Downloads</b></div><div id="dlList" style="padding:14px"><div style="text-align:center;color:#666;padding:50px"><div style="font-size:50px">⬇️</div><div>No downloads yet</div></div></div></div>
+
+<div class="vp" id="vp">
+<div style="padding:10px;display:flex;gap:10px;align-items:center;background:#000;border-bottom:1px solid #222"><div class="back" onclick="closeV()">←</div><div><b id="vt" style="font-size:13px">Blue Box [Hindi]</b><div style="font-size:10px;color:#888">2024 • Japan • 2 seasons</div></div></div>
+<video id="v" controls playsinline></video>
+<div style="background:#0f0f0f;padding:10px">
+<div style="display:flex;justify-content:space-between;margin-bottom:10px"><div style="font-size:11px">⭐ 8.0 • Hindi dub ✓</div><div style="display:flex;gap:6px"><button class="res-btn">Add to list</button><button class="res-btn">Share</button></div></div>
+<div style="font-size:11px;color:#888;margin-bottom:6px">Resources</div>
+<div class="res-bar"><button class="res-btn active">Hindi dub</button><button class="res-btn">Season 01</button><button class="res-btn active" style="background:#2ecc71;color:#000">Season 02</button></div>
+<div class="ep-bar"><button class="ep">All</button><button class="ep">01</button><button class="ep">02</button><button class="ep active">03</button></div>
+<div class="q-bar" style="margin-top:12px"><button class="q-btn active" id="q1080" onclick="setQ('1080')">HQ 1080P Hindi</button><button class="q-btn" id="q720" onclick="setQ('720')">HD 720P</button><button class="q-btn" id="q480" onclick="setQ('480')">SD 480P</button></div>
+<div style="display:flex;gap:8px;justify-content:center;margin-top:10px"><button onclick="downloadNow()" style="background:#2ecc71;color:#000;border:none;padding:9px 22px;border-radius:20px;font-weight:800">⬇️ Download <span id="dlQ">1080P</span></button><button onclick="document.getElementById('v').play()" style="background:#ff3b30;color:#fff;border:none;padding:9px 22px;border-radius:20px;font-weight:800">▶ Play</button><button onclick="closeV()" style="background:#1e1e1e;border:1px solid #333;color:#fff;padding:8px 16px;border-radius:20px">✕ Close</button></div>
+<div style="display:flex;justify-content:space-between;padding:10px 0 0;font-size:10px;color:#666"><span>⏩ Speed: <span id="speedVal">1x</span> - Click to change</span><span onclick="changeSpeed()">📺 TV • 🔒 Lock • ⚙️ Settings</span></div>
+</div>
+</div>
+
 <div class="bottom"><div class="bi active" onclick="goHome()"><div>🏠</div>Home</div><div class="bi" onclick="openDL()"><div>⬇️</div>Downloads</div><div class="bi" onclick="openMe()"><div>👤</div>Me</div></div>
 
 <script>
-let cur='',curImg='',dls=[];
-function doLogin(){let e=document.getElementById('email').value||'Google User';document.getElementById('userName').innerText=e;document.getElementById('loginPage').classList.add('hide');localStorage.setItem('flickbox_login','yes');localStorage.setItem('flickbox_user',e);let s=localStorage.getItem('flickbox_dl');if(s){dls=JSON.parse(s);updateCount();}}
+let cur='',curImg='',dls=[],currentQ='1080',currentSpeed=1;
+const VIDEOS={'1080':"https://www.w3schools.com/html/mov_bbb.mp4",'720':"https://www.w3schools.com/html/movie.mp4",'480':"https://www.w3schools.com/html/mov_bbb.mp4"};
+function checkGoogle(){let e=document.getElementById('email').value.trim();let p=document.getElementById('pass').value.trim();if(!e){document.getElementById('eErr').style.display='block';alert('Email likhna zaroori hai!');return;}if(!p){document.getElementById('pErr').style.display='block';alert('Password likhna zaroori hai!');return;}doLogin();}
+function doLogin(){let e=document.getElementById('email').value.trim();let p=document.getElementById('pass').value.trim();document.getElementById('eErr').style.display='none';document.getElementById('pErr').style.display='none';if(e.length<3){document.getElementById('eErr').style.display='block';alert('Email zaroori hai!');return;}if(p.length<3){document.getElementById('pErr').style.display='block';alert('Password zaroori hai!');return;}document.getElementById('userName').innerText=e;document.getElementById('loginPage').classList.add('hide');localStorage.setItem('flickbox_login','yes');localStorage.setItem('flickbox_user',e);let s=localStorage.getItem('flickbox_dl');if(s){dls=JSON.parse(s);updateCount();renderDL();}}
 if(localStorage.getItem('flickbox_login')){document.getElementById('loginPage').classList.add('hide');let u=localStorage.getItem('flickbox_user');if(u)document.getElementById('userName').innerText=u;let s=localStorage.getItem('flickbox_dl');if(s){dls=JSON.parse(s);updateCount();renderDL();}}
 function logout(){localStorage.clear();location.reload();}
-function downloadNow(){if(!cur)return;let a=document.createElement('a');a.href=document.getElementById('v').src;a.download=cur+'.mp4';a.click();dls.push({title:cur,img:curImg});localStorage.setItem('flickbox_dl',JSON.stringify(dls));updateCount();renderDL();alert('Downloading: '+cur);}
+function setQ(q){currentQ=q;document.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('active'));document.getElementById('q'+q).classList.add('active');document.getElementById('dlQ').innerText=q+'P';document.getElementById('v').src=VIDEOS[q];document.getElementById('v').play().catch(()=>{});}
+function changeSpeed(){let speeds=[0.5,0.75,1,1.25,1.5,2];let idx=speeds.indexOf(currentSpeed);currentSpeed=speeds[(idx+1)%speeds.length];document.getElementById('v').playbackRate=currentSpeed;document.getElementById('speedVal').innerText=currentSpeed+'x';}
+function downloadNow(){if(!cur)return;let a=document.createElement('a');a.href=VIDEOS[currentQ];a.download=cur+'_'+currentQ+'p.mp4';a.target='_blank';document.body.appendChild(a);a.click();document.body.removeChild(a);dls.push({title:cur+' ['+currentQ+'p]',img:curImg});localStorage.setItem('flickbox_dl',JSON.stringify(dls));updateCount();renderDL();alert('Download Started: '+cur);}
 function updateCount(){document.getElementById('dlCount').innerText=dls.length;}
-function renderDL(){if(dls.length==0)return;document.getElementById('dlList').innerHTML=dls.map(d=>`<div style="background:#151515;border:1px solid #222;border-radius:12px;padding:12px;display:flex;gap:12px;margin-bottom:10px"><img src="${d.img}" style="width:60px;height:80px;border-radius:8px;object-fit:cover"><div style="flex:1"><div style="font-size:12px;font-weight:700">${d.title}</div><div style="font-size:10px;color:#2ecc71;margin-top:4px">✓ Downloaded</div></div><div>▶</div></div>`).join('');}
-const BASE=[
-["A Wild Last Boss Appeared","Hindi","https://picsum.photos/seed/boss/300/400"],
-["Blue Box [Hindi]","Hindi","https://picsum.photos/seed/bluebox/300/400"],
-["Doraemon","Japan","https://picsum.photos/seed/dora/300/400"],
-["Naruto Shippuden","Hindi","https://picsum.photos/seed/naruto/300/400"],
-["One Piece","Hindi","https://picsum.photos/seed/onepiece/300/400"],
-["Bleach TYBW","Hindi","https://picsum.photos/seed/bleach/300/400"],
-["Jujutsu Kaisen","Hindi","https://picsum.photos/seed/juju/300/400"],
-["Solo Leveling","Hindi","https://picsum.photos/seed/solo/300/400"],
-["My Dearest Nemesis","Hindi","https://picsum.photos/seed/neme/300/400"]
-];
-function gen(){let a=[];for(let i=0;i<40;i++)BASE.forEach(b=>a.push(b));return a;}
+function renderDL(){if(dls.length==0)return;document.getElementById('dlList').innerHTML=dls.map(d=>`<div style="background:#151515;border:1px solid #222;border-radius:12px;padding:12px;display:flex;gap:12px;margin-bottom:10px"><img src="${d.img}" style="width:60px;height:80px;border-radius:8px;object-fit:cover"><div style="flex:1"><div style="font-size:12px;font-weight:700">${d.title}</div><div style="font-size:10px;color:#2ecc71;margin-top:4px">✓ Downloaded</div></div></div>`).join('');}
+const BASE=[["Blue Box [Hindi]","Hindi","https://cdn.myanimelist.net/images/anime/1013/147717.jpg"],["A Wild Last Boss Appeared","Hindi","https://cdn.myanimelist.net/images/anime/1000/145145.jpg"],["Naruto Shippuden","Hindi","https://cdn.myanimelist.net/images/anime/5/17407.jpg"],["One Piece","Hindi","https://cdn.myanimelist.net/images/anime/6/73245.jpg"],["Jujutsu Kaisen","Hindi","https://cdn.myanimelist.net/images/anime/1131/136527.jpg"],["Solo Leveling","Hindi","https://cdn.myanimelist.net/images/anime/1925/145597.jpg"]];
+function gen(){let a=[];for(let i=0;i<30;i++)BASE.forEach(b=>a.push(b));return a;}
 const DATA=gen();
-function renderBanners(){document.getElementById('banners').innerHTML=BASE.slice(0,5).map(x=>`<div class="big" onclick="play('${x[0]}','${x[2]}')"><img src="${x[2]}"><div class="info"><b>${x[0]}</b><span style="color:#aaa;font-size:11px">${x[1]} • Tap to Play & Download</span></div></div>`).join('');}
-function card(x){return `<div class="card" onclick="play('${x[0]}','${x[2]}')"><span class="badge">${x[1]}</span><img src="${x[2]}"><p>${x[0]}</p></div>`}
-function render(){renderBanners();document.getElementById('r1').innerHTML=DATA.slice(0,40).map(card).join('');document.getElementById('r2').innerHTML=DATA.slice(10,50).map(card).join('');document.getElementById('r3').innerHTML=DATA.slice(20,60).map(card).join('');document.getElementById('r4').innerHTML=DATA.slice(30,70).map(card).join('');document.getElementById('r5').innerHTML=DATA.slice(40,80).map(card).join('');document.getElementById('r6').innerHTML=DATA.slice(50,90).map(card).join('');document.getElementById('r7').innerHTML=DATA.slice(60,100).map(card).join('');}
-function play(t,i){cur=t;curImg=i;document.getElementById('vt').innerText=t;document.getElementById('v').src='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';document.getElementById('vp').classList.add('on');document.getElementById('v').play();}
+function renderBanners(){document.getElementById('banners').innerHTML=BASE.slice(0,5).map(x=>`<div class="big" onclick="play('${x[0]}','${x[2]}')"><img src="${x[2]}"><div class="info"><b>${x[0]}</b><span style="color:#aaa;font-size:11px">${x[1]} • S02 E03 • MovieBox Style</span></div></div>`).join('');}
+function card(x){return `<div class="card" onclick="play('${x[0]}','${x[2]}')"><span class="badge">${x[1]}</span><img src="${x[2]}" onerror="this.src='https://via.placeholder.com/134x188/151515/fff?text=FLICKBOX'"><p>${x[0]}</p></div>`}
+function render(){renderBanners();document.getElementById('r1').innerHTML=DATA.slice(0,40).map(card).join('');document.getElementById('r2').innerHTML=DATA.slice(10,50).map(card).join('');document.getElementById('r3').innerHTML=DATA.slice(20,60).map(card).join('');document.getElementById('r4').innerHTML=DATA.slice(30,70).map(card).join('');}
+function play(t,i){cur=t;curImg=i;document.getElementById('vt').innerText=t+' - S02 E03';setQ('1080');document.getElementById('vp').classList.add('on');}
 function closeV(){document.getElementById('vp').classList.remove('on');document.getElementById('v').pause();}
 function doSearch(q){q=q.toLowerCase();document.querySelectorAll('.card').forEach(c=>{c.style.display=c.innerText.toLowerCase().includes(q)?'':'none'})}
 function goHome(){window.scrollTo(0,0);}
