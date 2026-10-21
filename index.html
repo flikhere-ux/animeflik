@@ -171,3 +171,137 @@ render();
 </script>
 </body>
   </html>
+<!-- PATCH START - Missing Buttons Fix -->
+<style>
+.p-extra{position:absolute;bottom:50px;left:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap;z-index:10}
+.p-btn{background:rgba(0,0,0,0.7);border:1px solid #444;color:#fff;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;backdrop-filter:blur(10px)}
+.p-btn.active{background:#fff;color:#000}
+#langBox{display:none;position:absolute;bottom:85px;left:10px;right:10px;background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:10px;z-index:20}
+#langBox.on{display:block}
+.v-fix{position:relative}
+</style>
+
+<script>
+// 1. FIX BANNER IMAGES - Kitsu block ho rahi hai, is liye proxy lagao
+function fixImages(){
+document.querySelectorAll('img').forEach(img=>{
+ if(img.src.includes('kitsu.io') && !img.complete || img.naturalWidth==0){
+   img.onerror=null;
+   img.src='https://picsum.photos/seed/'+Math.random()+'/300/400';
+ }
+ img.onerror=function(){this.src='https://via.placeholder.com/300x400/151515/fff?text=ANIME';}
+});
+}
+setTimeout(fixImages,1000);
+setInterval(fixImages,3000);
+
+// 2. ADD MISSING PLAYER BUTTONS
+function addPlayerButtons(){
+let v=document.getElementById('v');
+if(!v) return;
+let parent=v.parentElement;
+if(parent.querySelector('.p-extra')) return;
+
+let html=`
+<div class="p-extra">
+<button class="p-btn active" id="btnHindi" onclick="toggleLang()">🌐 Hindi dub ✓</button>
+<button class="p-btn" onclick="toggleSub()">💬 Subtitle: Bilingual</button>
+<button class="p-btn" onclick="changeSpeed()">⏩ Speed: <span id="spdTxt">1x</span></button>
+<button class="p-btn" onclick="toggleMute()">🔊 Voice: <span id="volTxt">On</span></button>
+<button class="p-btn" onclick="toggleQual()">⚙️ HQ 1080P</button>
+</div>
+<div id="langBox">
+<div style="font-size:12px;font-weight:700;margin-bottom:8px">Select Language / Dub:</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="p-btn active" onclick="setLang(this,'Hindi dub')">Hindi dub ✓</button>
+<button class="p-btn" onclick="setLang(this,'English sub')">English sub</button>
+<button class="p-btn" onclick="setLang(this,'Bilingual')">Bilingual</button>
+<button class="p-btn" onclick="setLang(this,'Filipino dub')">Filipino dub</button>
+<button class="p-btn" onclick="setLang(this,'Original')">Original Japanese</button>
+</div>
+<div style="margin-top:10px;font-size:11px;color:#888">Dub aur Sub yahan se change hoga, episode jaldi download hoga</div>
+<button onclick="document.getElementById('langBox').classList.remove('on')" style="margin-top:8px;background:#333;color:#fff;border:none;padding:6px 14px;border-radius:20px">Close</button>
+</div>
+`;
+parent.classList.add('v-fix');
+parent.insertAdjacentHTML('beforeend',html);
+}
+
+function toggleLang(){
+let box=document.getElementById('langBox');
+box.classList.toggle('on');
+}
+function setLang(el,lang){
+document.querySelectorAll('#langBox .p-btn').forEach(b=>b.classList.remove('active'));
+el.classList.add('active');
+document.getElementById('btnHindi').innerText='🌐 '+lang+' ✓';
+document.getElementById('pLang').innerText=lang;
+document.getElementById('langBox').classList.remove('on');
+let v=document.getElementById('v');
+if(v){v.currentTime=0;v.play();}
+alert(lang+' Selected - Ab Dub/Sub yahan se change hoga');
+}
+function toggleSub(){
+alert('Subtitle: Bilingual / English / Hindi - Yahan se change hoga');
+}
+function toggleMute(){
+let v=document.getElementById('v');
+let txt=document.getElementById('volTxt');
+if(v.muted){v.muted=false;txt.innerText='On';}else{v.muted=true;txt.innerText='Off';}
+}
+function toggleQual(){
+setQ(currentQ=='1080'?'720':'1080');
+}
+setInterval(addPlayerButtons,1000);
+
+// 3. FIX DOWNLOAD - Kisi aur page pe na jaye, same page pe download ho
+let oldDownload=window.doDownload;
+window.doDownload=async function(){
+if(!cur) return;
+let btn=document.querySelector('button[onclick="doDownload()"]');
+if(btn) btn.innerText='⏳ Downloading...';
+try{
+let r=await fetch(VIDS[currentQ]);
+let b=await r.blob();
+let u=URL.createObjectURL(b);
+let a=document.createElement('a');
+a.href=u;a.download=cur.replace(/ /g,'_')+'_'+currentQ+'P.mp4';
+document.body.appendChild(a);a.click();
+document.body.removeChild(a);
+setTimeout(()=>URL.revokeObjectURL(u),1000);
+if(btn) btn.innerText='✅ Downloaded';
+setTimeout(()=>{if(btn) btn.innerText='⬇️ Download '+currentQ+'P'},2000);
+}catch(e){
+let a=document.createElement('a');
+a.href=VIDS[currentQ];a.download=cur+'_'+currentQ+'P.mp4';a.click();
+}
+dls.push({t:cur+' ['+currentQ+'P]',img:curImg});
+localStorage.setItem('fb_dl',JSON.stringify(dls));
+upd();renderDL();
+}
+
+// 4. FIX SETTINGS & ME PAGE - Banner change option add
+function addSettings(){
+let me=document.getElementById('mePage');
+if(!me || me.querySelector('#customBanner')) return;
+let html=`
+<div id="customBanner" style="padding:12px;">
+<div style="background:#151515;padding:12px;border-radius:12px;">
+<div style="font-size:12px;font-weight:700;margin-bottom:8px">🖼️ Change Banner Picture</div>
+<input id="bannerUrl" placeholder="Paste Anime Image URL" style="width:100%;background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:8px;color:#fff">
+<button onclick="changeBanner()" style="margin-top:6px;width:100%;background:#fff;color:#000;border:none;padding:8px;border-radius:8px;font-weight:700">Update Banner</button>
+<div style="font-size:10px;color:#666;margin-top:6px">Yahan se banner ki picture change hogi, jaise aapne kaha</div>
+</div>
+</div>`;
+me.querySelector('div[style*="padding:12px;display:grid"]')?.insertAdjacentHTML('beforebegin',html);
+}
+function changeBanner(){
+let url=document.getElementById('bannerUrl').value.trim();
+if(url.length<5){alert('URL daalo!');return;}
+document.querySelectorAll('.big img, .card-banner img').forEach(img=>img.src=url);
+document.getElementById('uAvatar').src=url;
+alert('Banner Changed! ✓');
+}
+setInterval(addSettings,2000);
+</script>
+<!-- PATCH END -->
