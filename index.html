@@ -219,4 +219,133 @@ const v=document.getElementById('mainVideo'), a=document.getElementById('mainAud
 function render(){
 let b=document.getElementById('bigThree'), t=document.getElementById('trending'), m=document.getElementById('magic'), s=document.getElementById('songs');
 b.innerHTML=""; t.innerHTML=""; m.innerHTML=""; s.innerHTML="";
-for(let k
+for(let k<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEFLIK - Created by Zero</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#000;color:#fff}
+.top{font-size:10px;text-align:center;padding:6px;color:#666;background:#0a0a0a}
+.head{position:sticky;top:0;background:#000;padding:10px;display:flex;gap:8px;align-items:center;border-bottom:1px solid #222;z-index:99}
+.back{width:38px;height:38px;border-radius:50%;background:#1a1a1a;border:1px solid #333;color:#fff;font-size:18px}
+.logo{color:#ff2222;font-weight:900;flex:1}
+.logo span{font-size:9px;color:#666;display:block}
+.search{flex:2;background:#141414;border:1px solid #333;border-radius:20px;padding:9px 12px;color:#fff}
+.voice{background:#1a1a1a;border:1px solid #333;color:#fff;width:38px;height:38px;border-radius:50%}
+video{width:100%;aspect-ratio:16/9;background:#000}
+.ctrl{display:flex;gap:6px;padding:10px;flex-wrap:wrap}
+.qbtn{background:#141414;border:1px solid #333;color:#fff;padding:6px 12px;border-radius:20px;font-size:11px}
+.qbtn.active{background:#ff1030}
+.play{background:#ff1030;border:none;color:#fff;padding:7px 16px;border-radius:20px;font-weight:800}
+.title{padding:14px 12px 6px;font-weight:900;display:flex;gap:6px}
+.title i{width:3px;background:#ff1030}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+.card{background:#111;border-radius:12px;overflow:hidden;border:1px solid #222}
+.card img{width:100%;height:175px;object-fit:cover}
+.card div{padding:8px}
+.card b{font-size:12px;display:block}
+.card span{font-size:10px;color:#777}
+.epPage{position:fixed;inset:0;background:#000;z-index:1000;display:none;overflow-y:auto}
+.epPage.on{display:block}
+.epItem{background:#121212;border:1px solid #222;padding:12px;border-radius:10px;margin:8px 12px;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="top">CREATED BY ZERO • flikhere-ux.github.io/animeflik</div>
+<div class="head">
+<button class="back" onclick="goBack()">←</button>
+<div class="logo">ANIMEFLIK 🔥<span>Created by Zero</span></div>
+<input class="search" id="sBox" placeholder="Search anime..." oninput="search(this.value)">
+<button class="voice" onclick="startVoice()">🎙️</button>
+</div>
+
+<video id="v" controls poster="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600"></video>
+<div class="ctrl">
+<button class="qbtn active">HQ 1080p</button>
+<button class="qbtn">HD 720p</button>
+<button class="qbtn">LQ 480p</button>
+<button class="play" onclick="document.getElementById('v').play()">▶ Play Now</button>
+</div>
+<div id="now" style="text-align:center;color:#ffb400;font-size:11px">Now Playing: Select Anime</div>
+
+<div class="title"><i></i> BIG THREE LIVE</div>
+<div class="grid" id="g1"></div>
+<div class="title"><i></i> TRENDING NOW</div>
+<div class="grid" id="g2"></div>
+<div class="title"><i></i> MAGIC WORLD</div>
+<div class="grid" id="g3"></div>
+<div class="title"><i></i> Songs - MP3 Background</div>
+<div class="grid" id="g4"></div>
+
+<div class="epPage" id="epPage">
+<div class="head"><button class="back" onclick="closeEp()">←</button><b id="epT"></b></div>
+<div id="epList"></div>
+</div>
+
+<script>
+const DATA={
+naruto:{t:"Naruto Shippuden",c:"big",i:"https://cdn.myanimelist.net/images/anime/5/17407.jpg",e:500},
+onepiece:{t:"One Piece",c:"big",i:"https://cdn.myanimelist.net/images/anime/6/73245.jpg",e:1120},
+bleach:{t:"Bleach TYBW",c:"big",i:"https://cdn.myanimelist.net/images/anime/3/81465.jpg",e:28},
+jujutsu:{t:"Jujutsu Kaisen",c:"trend",i:"https://cdn.myanimelist.net/images/anime/1131/136527.jpg",e:47},
+demon:{t:"Demon Slayer",c:"trend",i:"https://cdn.myanimelist.net/images/anime/1286/99889.jpg",e:55},
+solo:{t:"Solo Leveling",c:"trend",i:"https://cdn.myanimelist.net/images/anime/1925/145597.jpg",e:24},
+nomagic:{t:"No Magic",c:"magic",i:"https://cdn.myanimelist.net/images/anime/1208/94745.jpg",e:24}
+};
+const SONGS=[
+{t:"Arijit Singh - Sajni",i:"https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"},
+{t:"Arijit Singh - Apna Bana Le",i:"https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400"}
+];
+function render(){
+let g1=document.getElementById('g1'),g2=document.getElementById('g2'),g3=document.getElementById('g3'),g4=document.getElementById('g4');
+g1.innerHTML='';g2.innerHTML='';g3.innerHTML='';g4.innerHTML='';
+for(let k in DATA){
+let a=DATA[k];
+let h=`<div class="card" onclick="openA('${k}')"><img src="${a.i}"><div><b>${a.t}</b><span>${a.e} Episodes</span></div></div>`;
+if(a.c=='big') g1.innerHTML+=h; else if(a.c=='trend') g2.innerHTML+=h; else g3.innerHTML+=h;
+}
+SONGS.forEach(s=>{
+g4.innerHTML+=`<div class="card"><img src="${s.i}"><div><b>${s.t}</b><span>Thumbnail=Title</span></div></div>`;
+});
+}
+function openA(id){
+let a=DATA[id];
+document.getElementById('epT').innerText=a.t;
+let list=document.getElementById('epList'); list.innerHTML='';
+for(let i=1;i<=100;i++){
+list.innerHTML+=`<div class="epItem" onclick="playEp('${id}',${i})"><b>Episode ${i}</b><span>▶</span></div>`;
+}
+document.getElementById('epPage').classList.add('on');
+}
+function playEp(id,n){
+document.getElementById('now').innerText='Now Playing: '+DATA[id].t+' - Episode '+n;
+document.getElementById('v').src='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+document.getElementById('v').play();
+closeEp();
+}
+function closeEp(){document.getElementById('epPage').classList.remove('on')}
+function goBack(){if(document.getElementById('epPage').classList.contains('on')) closeEp(); else history.back()}
+function search(q){
+q=q.toLowerCase();
+document.querySelectorAll('.card').forEach(c=>{
+c.style.display=c.innerText.toLowerCase().includes(q)?'block':'none';
+});
+}
+function startVoice(){
+let R=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!R){alert('Voice Chrome me chalega');return}
+let r=new R(); r.lang='en-US'; r.start();
+r.onresult=e=>{
+let txt=e.results[0][0].transcript;
+document.getElementById('sBox').value=txt;
+search(txt);
+};
+}
+render();
+document.addEventListener('contextmenu',e=>e.preventDefault());
+</script>
+</body>
+</html>
